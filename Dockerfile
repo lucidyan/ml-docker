@@ -6,6 +6,7 @@ MAINTAINER Craig Citro <craigcitro@google.com>
 # Pick up some TF dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
+	apt-utils \
         curl \
         libfreetype6-dev \
         libpng12-dev \

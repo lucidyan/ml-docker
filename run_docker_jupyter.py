@@ -11,7 +11,7 @@ def main():
                         help='Whether to use --net=host with docker run (for Linux servers)')
     args = parser.parse_args()
 
-    run_command = 'sudo nvidia-docker run -it {0} --rm -p 8888:8888 -v {1}:/notebooks -w /notebooks {2}'.format(
+    run_command = 'nvidia-docker run -it {0} --rm -p 8888:8888 -v {1}:/notebooks -w /notebooks {2}'.format(
         '--net=host' if args.net_host else '', os.getcwd(), args.docker_tag)
 
     print('Running command\n' + run_command)

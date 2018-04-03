@@ -20,7 +20,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
     python3 get-pip.py && \
-    rm get-pip.py
+    rm get-pip.py && \
+    pip3 install --upgrade pip
 
 RUN pip3 --no-cache-dir install \
         Pillow \
@@ -43,7 +44,7 @@ RUN pip3 --no-cache-dir install \
 
 # Install TensorFlow GPU version.
 RUN pip3 --no-cache-dir install \
-    https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-1.5.0-cp35-cp35m-linux_x86_64.whl
+    https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-1.7.0-cp35-cp35m-linux_x86_64.whl
 # --- ~ DO NOT EDIT OR DELETE BETWEEN THE LINES --- #
 
 #################################################################
@@ -62,9 +63,12 @@ RUN pip3 --no-cache-dir install \
         tqdm \
         pydot \
 	scikit-image \
-	keras \
 	watermark \
+	opencv-python \
     && python3 -m ipykernel.kernelspec
+
+# Keras
+RUN pip3 --no-cache-dir install git+git://github.com/fchollet/keras.git
 
 # PyTorch
 RUN pip3 install http://download.pytorch.org/whl/cu90/torch-0.3.1-cp35-cp35m-linux_x86_64.whl 

@@ -1,6 +1,6 @@
 Build the container:
 
-`docker build -t "lucidyan/ml-docker:1.1" .`
+`docker build -t "lucidyan/ml-docker:1.2" .`
 
 Run it
 
@@ -8,4 +8,4 @@ Run it
 
 or
 
-`nvidia-docker run --rm -it -p 8888:8888 -v /home/lucidyan/Projects/ml-docker:/notebooks -w /notebooks "lucidyan/ml-docker:1.1"`
+`nvidia-docker run --rm -it -p 8888:8888 -v $(pwd):/notebooks -w /notebooks "lucidyan/ml-docker:1.2"`

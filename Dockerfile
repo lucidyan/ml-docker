@@ -1,15 +1,15 @@
-FROM nvidia/cuda:9.1-devel-ubuntu16.04
+FROM nvidia/cuda:9.0-devel-ubuntu16.04
 LABEL maintainer "lucidyan"
 
 #################################################################
 # cuDNN
 #################################################################
-ENV CUDNN_VERSION 7.1.2.21
+ENV CUDNN_VERSION 7.1.4.18
 LABEL com.nvidia.cudnn.version="${CUDNN_VERSION}"
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-            libcudnn7=$CUDNN_VERSION-1+cuda9.1 \
-            libcudnn7-dev=$CUDNN_VERSION-1+cuda9.1 && \
+            libcudnn7=$CUDNN_VERSION-1+cuda9.0 && \
+    apt-mark hold libcudnn7 && \
     rm -rf /var/lib/apt/lists/*
 
 #################################################################
@@ -79,7 +79,7 @@ RUN pip3 --no-cache-dir install \
 RUN pip3 --no-cache-dir install git+git://github.com/fchollet/keras.git
 
 # PyTorch
-RUN pip3 install http://download.pytorch.org/whl/cu91/torch-0.4.0-cp35-cp35m-linux_x86_64.whl 
+RUN pip3 install http://download.pytorch.org/whl/cu90/torch-0.4.0-cp35-cp35m-linux_x86_64.whl 
 RUN pip3 install torchvision
 
 # XGBoost

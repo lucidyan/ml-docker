@@ -1,11 +1,32 @@
-Build the container:
+# NVIDIA DL Docker
+Container for Deep Learning with built-in Jupyter/Tensorboard and latest DL Frameworks
 
-`docker build -t "lucidyan/ml-docker:1.2" .`
+# Specification
+- Ubuntu 16.04
+- CUDA 9.0
+- CuDNN 7.x
+- Tensorflow 1.9.0
+- PyTorch 0.4.0
+- Keras (latest)
+- Tensorboard
+- Jupyter
+- ...other useful packages
 
-Run it
+# Quickstart
+- Clone this repository
+<br/>`git clone https://github.com/lucidyan/ml-docker`
 
-`python3 run_docker_jupyter.py`
+- Install NVIDIA-Docker
+<br/>`cd ml-docker; sudo chmod a+x nvidia_docker_install.sh; sudo ./nvidia_docker_install.sh`
 
-or
+- Reboot system after Docker installation (neccessary for running Docker without sudo rights)
 
-`nvidia-docker run --rm -it -p 8888:8888 -v $(pwd):/notebooks -w /notebooks "lucidyan/ml-docker:1.2"`
+- Build the image
+<br/>`docker build -t "lucidyan/ml-docker:1.3" .`
+
+- Run it with command
+<br/>`python3 run_docker_jupyter.py -pj 8888 -pt 6006`
+<br/> where `8888` and `6006` your local unoccupied ports for Jupyter and Tensorboard respectively
+
+# Common mistakes
+- You should temporarily move all your files from notebooks folder. Otherwise Docker will not build properly!

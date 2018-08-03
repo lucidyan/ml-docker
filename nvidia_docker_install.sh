@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Docker installation script
+# NVIDIA-Docker installation script
 
 # --------------------------------------------------------------------------
 # Docker CE install
@@ -11,7 +11,7 @@
 #----------------------
 
 # 1 Install packages to allow apt to use a repository over HTTPS:
-sudo apt-get install \
+sudo apt-get install -y \
     apt-transport-https \
     ca-certificates \
     curl \
@@ -25,7 +25,7 @@ sudo apt-key fingerprint 0EBFCD88
 
 # 4 Use the following command to set up the stable repository. You always 
 # need the stable repository, even if you want to install edge builds as well.
-sudo add-apt-repository \
+sudo add-apt-repository -y \
    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
    $(lsb_release -cs) \
    stable"
@@ -34,7 +34,7 @@ sudo add-apt-repository \
 # INSTALL DOCKER 
 #----------------------
 sudo apt-get update
-sudo apt-get install docker-ce
+sudo apt-get install -y docker-ce
 sudo docker run hello-world
 
 #----------------------
@@ -44,9 +44,10 @@ sudo docker run hello-world
 sudo groupadd docker
 sudo usermod -aG docker $USER
 
-#----------------------
-# Ubuntu distributions
-#----------------------
+# --------------------------------------------------------------------------
+# NVIDIA-Docker install
+# https://github.com/NVIDIA/nvidia-docker#ubuntu-140416041804-debian-jessiestretch
+# --------------------------------------------------------------------------
 
 # If you have nvidia-docker 1.0 installed: we need to remove it and all existing GPU containers
 docker volume ls -q -f driver=nvidia-docker | xargs -r -I{} -n1 docker ps -q -a -f volume={} | xargs -r docker rm -f
@@ -65,4 +66,4 @@ sudo apt-get install -y nvidia-docker2
 sudo pkill -SIGHUP dockerd
 
 # Test nvidia-smi with the latest official CUDA image
-docker run --runtime=nvidia --rm nvidia/cuda nvidia-smi
+sudo docker run --runtime=nvidia --rm nvidia/cuda nvidia-smi

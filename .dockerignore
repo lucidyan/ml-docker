@@ -1,0 +1,11 @@
+# Ignore everything
+**
+
+# Allow files and directories
+!/*.py
+!/*.sh
+!/notebooks/
+
+# Ignore unnecessary files inside allowed directories
+# This should go after the allowed directories
+/*/*

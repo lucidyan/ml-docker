@@ -20,7 +20,7 @@ Container for Deep Learning with built-in Jupyter/Tensorboard and latest DL Fram
 - Install NVIDIA-Docker
 <br/>`cd ml-docker; sudo chmod a+x nvidia_docker_install.sh; sudo ./nvidia_docker_install.sh`
 
-- Reboot system after Docker installation (neccessary for running Docker without sudo rights)
+- Reboot system after Docker installation (necessary for running Docker without sudo rights)
 
 - Build the image
 <br/>`docker build -t "lucidyan/ml-docker:1.3" .`

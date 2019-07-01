@@ -1,14 +1,16 @@
 # NVIDIA DL Docker
-Container for Deep Learning with built-in Jupyter/Tensorboard and latest DL Frameworks
+Image for Deep Learning with built-in Jupyter/Tensorboard and latest DL Frameworks
 
-# Specification
+# Requirements
 - Ubuntu 16.04
 - Python 3.5
 - CUDA 9.0
 - CuDNN 7.x
-- Tensorflow 1.9.0
-- PyTorch 0.4.0
-- Keras (latest)
+
+# Specification
+- Tensorflow 1.14.0
+- PyTorch 1.1.0
+- Keras
 - Tensorboard
 - Jupyter
 - ...other useful packages
@@ -23,7 +25,7 @@ Container for Deep Learning with built-in Jupyter/Tensorboard and latest DL Fram
 - Reboot system after Docker installation (necessary for running Docker without sudo rights)
 
 - Build the image
-<br/>`docker build -t "lucidyan/ml-docker:1.3" .`
+<br/>`docker build -t "lucidyan/ml-docker:19.07.1" .`
 
 - Run it with command
 <br/>`python3 run_docker_jupyter.py -pj 8888 -pt 6006`

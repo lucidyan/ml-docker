@@ -1,33 +1,41 @@
-FROM nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
+FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04
 
 LABEL maintainer="lucidyan"
 
+# debconf: delaying package configuration, since apt-utils is not installed
+ENV DEBIAN_FRONTEND=noninteractive
 #################################################################
 # System packages
 #################################################################
-RUN apt-get update && \
-        apt-get install -y --no-install-recommends \
+# Python
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+	# debconf: delaying package configuration, since apt-utils is not installed
         apt-utils \
-        build-essential \
+        # add-apt-repository
         software-properties-common \
+    && add-apt-repository ppa:deadsnakes/ppa \
+    && apt-get install -y --no-install-recommends \
+	python3.7 \
+	python3.7-dev \
+    && update-alternatives --install /usr/bin/python3 python3.7 /usr/bin/python3.7 0 \
+    && python3 --version
+
+# Neccessary system packages
+RUN apt-get install -y --no-install-recommends \
 	# Libraries
         libncurses5-dev \
         libjpeg8 \
         libjpeg62-dev \
         libfreetype6 \
         libfreetype6-dev \
-        libpng12-dev \
+        libpng-dev \
         libzmq3-dev \
 	libboost-dev \
 	libboost-system-dev \
 	libboost-filesystem-dev \
-	# Python
-        pkg-config \
-        python3.5 \
-        python3.5-dev \
-        libpython3-dev \
 	# Utils
-        cmake \
+        build-essential \
         rsync \
         curl \
         unzip \
@@ -35,20 +43,29 @@ RUN apt-get update && \
         git \
         wget \
         htop \
-        wget \
         nano \
         vim \
-    && \
-    apt-get clean
+    && apt-get clean
 
-#################################################################
-# Python packages
-#################################################################
+# CMake
+RUN export CMAKE_FILENAME=cmake-3.14.0-Linux-x86_64.sh \
+	&& wget https://cmake.org/files/LatestRelease/$CMAKE_FILENAME -O /tmp/$CMAKE_FILENAME -q \
+	&& apt-get remove --purge --auto-remove cmake -y \
+	&& mkdir /opt/cmake \
+	&& sh /tmp/$CMAKE_FILENAME --prefix=/opt/cmake --skip-license && rm /tmp/$CMAKE_FILENAME \
+	&& ln -s /opt/cmake/bin/cmake /usr/local/bin/cmake \
+	&& cmake --version
+
+##################################################################
+## Python packages
+##################################################################
 # PIP
-RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
-    python3 get-pip.py && \
-    rm get-pip.py && \
-    pip3 install --upgrade pip
+RUN apt-get install -y --no-install-recommends \
+	python3-pip \
+    && curl -O https://bootstrap.pypa.io/get-pip.py \
+    && python3 get-pip.py \
+    && rm get-pip.py \
+    && pip3 install --upgrade pip
 
 # PIP packages
 RUN pip3 --no-cache-dir install \
@@ -76,51 +93,40 @@ RUN pip3 --no-cache-dir install \
 	# Vision
         opencv-python \
         scikit-image \
-    && \
-    python3 -m ipykernel.kernelspec \
-    && \
-    jupyter nbextension enable --py widgetsnbextension
+    && python3 -m ipykernel.kernelspec \
+    && jupyter nbextension enable --py widgetsnbextension
 
-# CMake
-ADD https://cmake.org/files/LatestRelease/cmake-3.14.0-Linux-x86_64.sh /cmake-3.14.0-Linux-x86_64.sh
-RUN apt remove --purge --auto-remove cmake -y && \
-	mkdir /opt/cmake && \
-	sh /cmake-3.14.0-Linux-x86_64.sh --prefix=/opt/cmake --skip-license && \
-	ln -s /opt/cmake/bin/cmake /usr/local/bin/cmake && \
-	cmake --version
 
 # XGBoost python wrapper
-RUN cd /usr/local/src && git clone --recursive https://github.com/dmlc/xgboost && \
-    cd xgboost && \
-    mkdir build && cd build && \
-    cmake .. -DUSE_CUDA=ON -DUSE_NCCL=ON -DNCCL_ROOT=/usr/local/nccl-{$NCCL_VERSION} && \
-    make -j$(nproc) && \
-    cd .. && \
-    cd /usr/local/src/xgboost/python-package && python3 setup.py install
+RUN cd /usr/local/src && git clone --recursive https://github.com/dmlc/xgboost \
+    && cd xgboost \
+    && mkdir build && cd build \
+    && cmake .. -DUSE_CUDA=ON -DUSE_NCCL=ON -DNCCL_ROOT=/usr/local/nccl-{$NCCL_VERSION} \
+    && make -j$(nproc) \
+    && cd .. \
+    && cd /usr/local/src/xgboost/python-package && python3 setup.py install
 
 # LightGBM
-RUN cd /usr/local/src && git clone --recursive https://github.com/Microsoft/LightGBM && \
-    cd LightGBM && \
-    mkdir build && cd build && \
-    cmake .. -DUSE_GPU=1 -DOpenCL_LIBRARY=/usr/local/cuda/lib64/libOpenCL.so -DOpenCL_INCLUDE_DIR=/usr/local/cuda/include/ && \
-    make -j$(nproc) && \
-    cd .. && \
-    cd /usr/local/src/LightGBM/python-package && python3 setup.py install
+RUN cd /usr/local/src && git clone --recursive https://github.com/Microsoft/LightGBM \
+    && cd LightGBM \
+    && mkdir build && cd build \
+    && cmake .. -DUSE_GPU=1 -DOpenCL_LIBRARY=/usr/local/cuda/lib64/libOpenCL.so -DOpenCL_INCLUDE_DIR=/usr/local/cuda/include/ \
+    && make -j$(nproc) \
+    && cd .. \
+    && cd /usr/local/src/LightGBM/python-package && python3 setup.py install
 
 # CatBoost
-RUN pip3 install catboost
+RUN pip3 --no-cache-dir install catboost
 
 # PyTorch
 RUN pip3 --no-cache-dir install \
-	https://download.pytorch.org/whl/cu90/torch-1.1.0-cp35-cp35m-linux_x86_64.whl \
-        torchvision==0.3.0
+	https://download.pytorch.org/whl/cu100/torch-1.1.0-cp37-cp37m-linux_x86_64.whl \
+        https://download.pytorch.org/whl/cu100/torchvision-0.3.0-cp37-cp37m-linux_x86_64.whl
 
-# Install TensorFlow GPU version.
+# Install TensorFlow GPU version with Keras
 RUN pip3 --no-cache-dir install \
-    https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-1.14.0-cp35-cp35m-linux_x86_64.whl
-
-# Keras
-RUN pip3 install keras
+    https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-1.14.0-cp37-cp37m-linux_x86_64.whl \
+    keras
 
 #################################################################
 # Setup container
@@ -143,3 +149,5 @@ RUN useradd -m docker && echo "docker:docker" | chpasswd && adduser docker sudo
 USER docker
 
 WORKDIR "/home/docker/"
+
+ENV DEBIAN_FRONTEND=teletype

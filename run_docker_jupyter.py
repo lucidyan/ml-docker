@@ -13,11 +13,15 @@ def main():
     parser.add_argument("--port_tensorboard", "-pt", default='6006', help='External Tensorboard port')
     args = parser.parse_args()
 
-    run_command = ('nvidia-docker run --rm -it '
-                   '-p {1}:8888 -p {2}:6006 '
-                   '-v {0}/notebooks:{5}/notebooks '
-                   '{3} '
-                   '{4} '
+    run_command = (
+            'nvidia-docker run'
+            ' --rm'
+            ' -it'
+            ' --ipc=host'
+            ' -p {1}:8888 -p {2}:6006'
+            ' -v {0}/notebooks:{5}/notebooks'
+            ' {3}'
+            ' {4}'
         .format(
             os.getcwd(),
             args.port_jupyter,

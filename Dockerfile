@@ -128,6 +128,25 @@ RUN pip3 --no-cache-dir install \
     https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-1.14.0-cp37-cp37m-linux_x86_64.whl \
     keras
 
+RUN pip3 --no-cache-dir install \
+    albumentations 
+
+RUN git clone https://github.com/rflamary/POT && \
+    cd POT && \
+    python3 setup.py install
+
+RUN pip3 --no-cache-dir install \
+    # POT \
+    pymanopt \
+    autograd
+
+
+RUN git clone https://github.com/cudamat/cudamat.git && \
+    cd cudamat && \
+    python3 setup.py install
+
+RUN python3 -c 'import ot'
+
 #################################################################
 # Setup container
 #################################################################
@@ -146,6 +165,27 @@ EXPOSE 8888
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 RUN apt-get -y install sudo
 RUN useradd -m docker && echo "docker:docker" | chpasswd && adduser docker sudo
+
+# ARG USER_ID
+# ARG GROUP_ID
+
+## Создать пользователя
+#RUN USER_ID=1000 GROUP_ID=1000 \
+#    OLD_GROUP_NAME="$(getent group ${GROUP_ID}| cut -d: -f1)" && \
+#    OLD_GROUP_ID="$(getent group ${GROUP_ID}| cut -d: -f3)" && \
+#    # Магическое число для GID, которое скорее всего не занято другими группами
+#    NEW_GROUP_ID=10000 && \
+#    if [ "$OLD_GROUP_NAME" ]; then \
+#        # Перебиваем существующую группу
+#        groupmod -g "$NEW_GROUP_ID" "$OLD_GROUP_NAME" ; \
+#        find / -group "$OLD_GROUP_ID" -print 2>/dev/null \
+#            | xargs --no-run-if-empty chgrp -h "$NEW_GROUP_ID" ; \
+#    fi && \
+#    # Создаем/меняем группу с освободившимся GROUP_ID
+#    groupmod -g ${GROUP_ID} docker && \
+#    usermod -o -u ${USER_ID} docker
+
+
 USER docker
 
 WORKDIR "/home/docker/"

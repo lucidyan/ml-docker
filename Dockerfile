@@ -48,8 +48,8 @@ RUN apt-get install -y --no-install-recommends \
     && apt-get clean
 
 # CMake
-RUN export CMAKE_FILENAME=cmake-3.14.0-Linux-x86_64.sh \
-	&& wget https://cmake.org/files/LatestRelease/$CMAKE_FILENAME -O /tmp/$CMAKE_FILENAME -q \
+RUN export CMAKE_FILENAME=cmake-3.15.0-Linux-x86_64.sh \
+	&& wget https://cmake.org/files/v3.15/$CMAKE_FILENAME -O /tmp/$CMAKE_FILENAME -q \
 	&& apt-get remove --purge --auto-remove cmake -y \
 	&& mkdir /opt/cmake \
 	&& sh /tmp/$CMAKE_FILENAME --prefix=/opt/cmake --skip-license && rm /tmp/$CMAKE_FILENAME \

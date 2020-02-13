@@ -1,5 +1,6 @@
 import argparse
 import os
+import shutil
 
 HOME_DIRECTORY = '/home/docker'
 
@@ -7,29 +8,26 @@ HOME_DIRECTORY = '/home/docker'
 def main():
     parser = argparse.ArgumentParser(add_help=True, description='Run docker image.')
     parser.add_argument("--command", "-c", default="jupyter-notebook --ip 0.0.0.0")
-    parser.add_argument("--docker_tag", "-t", default='lucidyan/ml-docker:19.07.2',
+    parser.add_argument("--docker_tag", "-t", default='lucidyan/ml-docker:20.02.1',
                         help='Docker image tag')
     parser.add_argument("--port_jupyter", "-pj", default='8888', help='External Jupyter Notebook port')
     parser.add_argument("--port_tensorboard", "-pt", default='6006', help='External Tensorboard port')
     args = parser.parse_args()
 
+    gpu_option = ''
+    if shutil.which('nvidia-smi') is not None:
+        gpu_option = ' --gpus all'
+
     run_command = (
-            'nvidia-docker run'
-            ' --rm'
-            ' -it'
-            ' --ipc=host'
-            ' -p {1}:8888 -p {2}:6006'
-            ' -v {0}/notebooks:{5}/notebooks'
-            ' {3}'
-            ' {4}'
-        .format(
-            os.getcwd(),
-            args.port_jupyter,
-            args.port_tensorboard,
-            args.docker_tag,
-            args.command,
-            HOME_DIRECTORY
-        )
+        'docker run'
+        ' --rm'
+        ' -it'
+        ' --ipc=host'
+        f'{gpu_option}'
+        f' -p {args.port_jupyter}:8888 -p {args.port_tensorboard}:6006'
+        f' -v {os.getcwd()}/notebooks:{HOME_DIRECTORY}/notebooks'
+        f' {args.docker_tag}'
+        f' {args.command}'
     )
 
     print('Running command:\n' + run_command + '\n')

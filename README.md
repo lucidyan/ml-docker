@@ -2,7 +2,7 @@
 Image for Deep Learning with built-in Jupyter/Tensorboard and latest DL Frameworks
 
 # Requirements
-- Ubuntu 18.04.{}
+- Ubuntu 18.04
 
 # Environment
 - CUDA Toolkit 10.0
@@ -25,7 +25,9 @@ Image for Deep Learning with built-in Jupyter/Tensorboard and latest DL Framewor
 <br/>`git clone https://github.com/lucidyan/ml-docker`
 
 - Install CUDA-10
-<br/>https://gist.github.com/bogdan-kulynych/f64eb148eeef9696c70d485a76e42c3a
+<br/>
+- Old instruction: https://gist.github.com/bogdan-kulynych/f64eb148eeef9696c70d485a76e42c3a
+- New instruction: https://gist.github.com/Mahedi-61/2a2f1579d4271717d421065168ce6a73
 
 - Install NVIDIA-Docker
 <br/>`cd ml-docker; sudo chmod a+x nvidia_docker_install.sh; sudo ./nvidia_docker_install.sh`
@@ -33,7 +35,7 @@ Image for Deep Learning with built-in Jupyter/Tensorboard and latest DL Framewor
 - Reboot system after Docker installation (necessary for running Docker without sudo rights)
 
 - Build the image
-<br/>`docker build -t "lucidyan/ml-docker:19.07.2" .`
+<br/>`docker build --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) --tag "lucidyan/ml-docker:20.02.1" ." .`
 
 - Run it with command
 <br/>`python3 run_docker_jupyter.py -pj 8888 -pt 6006`

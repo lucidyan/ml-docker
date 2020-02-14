@@ -1,4 +1,5 @@
 import argparse
+import errno
 import os
 import shutil
 
@@ -8,7 +9,7 @@ HOME_DIRECTORY = '/home/docker'
 def main():
     parser = argparse.ArgumentParser(add_help=True, description='Run docker image.')
     parser.add_argument("--command", "-c", default="jupyter-notebook --ip 0.0.0.0")
-    parser.add_argument("--docker_tag", "-t", default='lucidyan/ml-docker:20.02.1',
+    parser.add_argument("--docker_tag", "-t", default='lucidyan/ml-docker:20.02.2',
                         help='Docker image tag')
     parser.add_argument("--port_jupyter", "-pj", default='8888', help='External Jupyter Notebook port')
     parser.add_argument("--port_tensorboard", "-pt", default='6006', help='External Tensorboard port')

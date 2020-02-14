@@ -26,8 +26,9 @@ Image for Deep Learning with built-in Jupyter/Tensorboard and latest DL Framewor
 
 - Install CUDA-10
 <br/>
-- Old instruction: https://gist.github.com/bogdan-kulynych/f64eb148eeef9696c70d485a76e42c3a
-- New instruction: https://gist.github.com/Mahedi-61/2a2f1579d4271717d421065168ce6a73
+    - Old instruction: https://gist.github.com/bogdan-kulynych/f64eb148eeef9696c70d485a76e42c3a
+    - New instruction: https://gist.github.com/Mahedi-61/2a2f1579d4271717d421065168ce6a73
+    - Best guide: https://www.tensorflow.org/install/gpu
 
 - Install NVIDIA-Docker
 <br/>`cd ml-docker; sudo chmod a+x nvidia_docker_install.sh; sudo ./nvidia_docker_install.sh`

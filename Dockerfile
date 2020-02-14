@@ -1,4 +1,4 @@
-FROM nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04
+FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04
 
 LABEL maintainer="lucidyan"
 
@@ -130,8 +130,8 @@ RUN pip3 --no-cache-dir install catboost
 # PyTorch
 RUN export PYTHON_VERSION_SHORT=$(echo ${PYTHON_VERSION} | tr -d '.') \
     && pip3 --no-cache-dir install \
-        http://download.pytorch.org/whl/cu100/torch-${TORCH_VERSION}%2Bcu100-cp${PYTHON_VERSION_SHORT}-cp${PYTHON_VERSION_SHORT}m-linux_x86_64.whl \
-            http://download.pytorch.org/whl/cu100/torchvision-${TORCHVISION_VERSION}%2Bcu100-cp${PYTHON_VERSION_SHORT}-cp${PYTHON_VERSION_SHORT}m-linux_x86_64.whl \
+        https://download.pytorch.org/whl/cu101/torch-${TORCH_VERSION}-cp${PYTHON_VERSION_SHORT}-cp${PYTHON_VERSION_SHORT}m-linux_x86_64.whl \
+            https://download.pytorch.org/whl/cu101/torchvision-${TORCHVISION_VERSION}-cp${PYTHON_VERSION_SHORT}-cp${PYTHON_VERSION_SHORT}m-linux_x86_64.whl \
         \
         # Catalyst
         && pip --no-cache-dir install catalyst
